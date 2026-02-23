@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing & Plans | Prime Scholars</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { 
+            --dark: #0a0f1d; 
+            --gold: #D4AF37; 
+            --white: #ffffff; 
+            --card-bg: #1c243d;
+        }
+
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background-color: var(--dark); 
+            color: var(--white); 
+            margin: 0; 
+            padding: 0; 
+        }
+
+        /* Nav Bar */
+        nav { 
+            background-color: var(--dark); 
+            padding: 15px 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 3px solid var(--gold); 
+        }
+        .logo { color: var(--gold); font-size: 1.2rem; font-weight: bold; text-decoration: none; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 15px; font-size: 0.9rem; }
+
+        .header { 
+            text-align: center; 
+            padding: 60px 20px; 
+            background: linear-gradient(rgba(10, 15, 29, 0.8), rgba(10, 15, 29, 0.8)), url('https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+        .header h1 { color: var(--gold); font-size: 2.5rem; margin-bottom: 10px; }
+        .header p { font-size: 1.1rem; opacity: 0.9; }
+
+        .pricing-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 50px 5%;
+        }
+
+        .price-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            padding: 40px 30px;
+            width: 320px;
+            text-align: center;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .price-card.featured {
+            border: 2px solid var(--gold);
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gold);
+            color: var(--dark);
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .price-card h3 { color: var(--gold); font-size: 1.5rem; margin-top: 0; }
+        .amount { font-size: 3rem; font-weight: bold; margin: 20px 0; }
+        .amount span { font-size: 1rem; opacity: 0.7; }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .features-list li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .features-list i { color: #28a745; margin-right: 10px; }
+
+        .btn-buy {
+            display: block;
+            background: var(--gold);
+            color: var(--dark);
+            text-decoration: none;
+            padding: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .btn-buy:hover { background: #fff; color: var(--dark); }
+
+        /* FAQ Section */
+        .faq-section { max-width: 800px; margin: 60px auto; padding: 0 20px; }
+        .faq-section h2 { text-align: center; color: var(--gold); margin-bottom: 40px; }
+        .faq-item { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 8px; margin-bottom: 15px; }
+        .faq-item h4 { margin: 0 0 10px 0; color: var(--gold); }
+        .faq-item p { margin: 0; opacity: 0.8; font-size: 0.95rem; line-height: 1.5; }
+
+        @media (max-width: 768px) {
+            .price-card.featured { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">PRIME SCHOLARS</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="registration.html">Enroll</a>
+            <a href="practice.html">Practice Arena</a>
+        </div>
+    </nav>
+
+    <div class="header">
+        <h1>Investment in Excellence</h1>
+        <p>Affordable access to world-class mathematics practice tools.</p>
+    </div>
+
+    <section class="pricing-container">
+        
+        <div class="price-card">
+            <h3>Trial Access</h3>
+            <div class="amount">₵ 10<span> / week</span></div>
+            <ul class="features-list">
+                <li><i class="fas fa-check"></i> Unlimited Games</li>
+                <li><i class="fas fa-check"></i> Basic Progress Report</li>
+                <li><i class="fas fa-check"></i> Mobile Access</li>
+                <li><i class="fas fa-times" style="color: #ff4d4d;"></i> Personal Tutor Chat</li>
+            </ul>
+            <a href="https://wa.me/233209851942?text=I%20want%20the%20Weekly%20Plan" class="btn-buy">Get Weekly Access</a>
+        </div>
+
+        <div class="price-card featured">
+            <div class="featured-badge">MOST POPULAR</div>
+            <h3>Monthly Scholar</h3>
+            <div class="amount">₵ 20<span> / month</span></div>
+            <ul class="features-list">
+                <li><i class="fas fa-check"></i> <strong>Everything in Weekly</strong></li>
+                <li><i class="fas fa-check"></i> Monthly Performance Review</li>
+                <li><i class="fas fa-check"></i> WhatsApp Support</li>
+                <li><i class="fas fa-check"></i> Exam Prep Materials</li>
+            </ul>
+            <a href="https://wa.me/233209851942?text=I%20want%20the%20Monthly%20Plan" class="btn-buy">Subscribe Now</a>
+        </div>
+
+        <div class="price-card">
+            <h3>Termly Elite</h3>
+            <div class="amount">₵ 50<span> / 3 months</span></div>
+            <ul class="features-list">
+                <li><i class="fas fa-check"></i> <strong>Save ₵ 10 per Term</strong></li>
+                <li><i class="fas fa-check"></i> Priority Support</li>
+                <li><i class="fas fa-check"></i> 1-on-1 Zoom Session (1x)</li>
+                <li><i class="fas fa-check"></i> Printable Worksheets</li>
+            </ul>
+            <a href="https://wa.me/233209851942?text=I%20want%20the%20Termly%20Plan" class="btn-buy">Go Termly</a>
+        </div>
+
+    </section>
+
+    <section class="faq-section">
+        <h2>Payment FAQ</h2>
+        
+        <div class="faq-item">
+            <h4>How do I get my access code?</h4>
+            <p>Once you send the MoMo payment to <strong>0540550512</strong>, send a screenshot to our WhatsApp. We will provide your unique code for the current month instantly.</p>
+        </div>
+
+        <div class="faq-item">
+            <h4>Can one code be used on two devices?</h4>
+            <p>Yes! Your monthly access code is valid for the student's use on any device, but it is limited to one active session at a time.</p>
+        </div>
+
+        <div class="faq-item">
+            <h4>What happens when the month ends?</h4>
+            <p>On the 1st of every month, the Arena locks automatically and a new code is generated. Simply renew your subscription to get the new code.</p>
+        </div>
+    </section>
+
+    <div style="text-align: center; padding-bottom: 50px;">
+        <a href="index.html" style="color: var(--gold); text-decoration: none; font-weight: bold;">← Back to Home</a>
+    </div>
+
+</body>
+</html>
