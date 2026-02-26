@@ -6,7 +6,7 @@
     <title>Practice Arena | Prime Scholars</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --dark: #0a0f1d; --gold: #D4AF37; --white: #ffffff; --error: #ff4d4d; }
+        :root { --dark: #0a0f1d; --gold: #D4AF37; --white: #ffffff; --error: #ff4d4d; --card-bg: #1c243d; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: var(--dark); color: var(--white); overflow-x: hidden; }
         
         /* Nav Bar */
@@ -17,6 +17,9 @@
             justify-content: space-between; 
             align-items: center; 
             border-bottom: 3px solid var(--gold); 
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
         .logo { color: var(--gold); font-size: 1.2rem; font-weight: bold; text-decoration: none; }
         .nav-links { display: flex; align-items: center; }
@@ -32,27 +35,105 @@
         }
         #logout-btn { color: var(--error); display: none; font-weight: bold; }
 
+        /* Navigation Code: Quick Switch Sidebar */
+        #quick-nav {
+            position: fixed;
+            left: -220px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--card-bg);
+            border: 2px solid var(--gold);
+            border-left: none;
+            padding: 15px;
+            border-radius: 0 10px 10px 0;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 999;
+            display: none;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+        }
+        #quick-nav:hover { left: 0; }
+        .nav-tab {
+            position: absolute;
+            right: -45px;
+            top: 50%;
+            transform: translateY(-50%) rotate(90deg);
+            background: var(--gold);
+            color: var(--dark);
+            padding: 8px 18px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+        }
+        .quick-nav-link {
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            transition: 0.2s;
+            background: rgba(255,255,255,0.03);
+        }
+        .quick-nav-link i { margin-right: 10px; color: var(--gold); width: 20px; text-align: center; }
+        .quick-nav-link:hover { background: var(--gold); color: var(--dark); }
+        .quick-nav-link:hover i { color: var(--dark); }
+
         /* Payment Wall */
         #payment-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 15, 29, 0.98); display: flex; justify-content: center; align-items: center; z-index: 2000; }
-        .payment-card { background: #1c243d; padding: 40px; border-radius: 15px; border: 2px solid var(--gold); text-align: center; max-width: 450px; width: 90%; box-shadow: 0 0 30px rgba(212, 175, 55, 0.15); }
+        .payment-card { background: var(--card-bg); padding: 40px; border-radius: 15px; border: 2px solid var(--gold); text-align: center; max-width: 450px; width: 90%; box-shadow: 0 0 30px rgba(212, 175, 55, 0.15); }
         .momo-badge { background: #ffcc00; color: #000; padding: 5px 15px; border-radius: 20px; font-weight: bold; display: inline-block; margin-bottom: 15px; font-size: 0.85rem; }
         .price-tag { font-size: 2rem; color: var(--gold); margin: 10px 0; }
         
         input[type="text"] { width: 100%; box-sizing: border-box; padding: 14px; margin: 20px 0 10px 0; border: 1px solid var(--gold); background: rgba(255,255,255,0.05); color: white; text-align: center; border-radius: 5px; font-size: 1.1rem; outline: none; }
         .btn-unlock { background: var(--gold); color: var(--dark); width: 100%; padding: 14px; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; text-transform: uppercase; }
-        .whatsapp-link { display: block; margin-top: 20px; color: #25d366; text-decoration: none; font-size: 0.9rem; }
+        
+        /* Menu Section */
+        #game-selection { display: none; padding: 50px 5%; text-align: center; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; max-width: 1200px; margin: 30px auto; }
+        .game-card { 
+            background: var(--card-bg); 
+            border: 2px solid #2d3748; 
+            padding: 35px 20px; 
+            border-radius: 15px; 
+            cursor: pointer; 
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .game-card:hover { border-color: var(--gold); transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+        .game-card i { font-size: 3rem; color: var(--gold); margin-bottom: 15px; }
+        .game-card h3 { margin: 10px 0; font-size: 1.2rem; }
+        .game-card p { font-size: 0.85rem; color: #aaa; line-height: 1.4; }
 
-        /* Game Section */
-        #game-arena { display: none; padding: 20px; text-align: center; }
-        .iframe-container { position: relative; width: 100%; max-width: 1100px; height: 80vh; margin: 20px auto; border: 4px solid var(--gold); border-radius: 10px; background: #000; overflow: hidden; }
+        /* Game Arena Section */
+        #game-arena { display: none; padding: 15px; text-align: center; }
+        .iframe-container { position: relative; width: 100%; max-width: 1200px; height: 82vh; margin: 10px auto; border: 3px solid var(--gold); border-radius: 12px; background: #000; overflow: hidden; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
         iframe { width: 100%; height: 100%; border: none; }
-        #msg { margin-top: 10px; font-size: 0.9rem; min-height: 1.2rem; }
+        .back-btn { background: none; border: 1px solid var(--gold); color: var(--gold); padding: 8px 18px; cursor: pointer; border-radius: 5px; margin-bottom: 10px; transition: 0.2s; }
+        .back-btn:hover { background: var(--gold); color: var(--dark); }
         
         /* Admin Box */
         #admin-display { display: none; margin-top: 15px; padding: 10px; border: 1px dashed var(--gold); background: rgba(212, 175, 55, 0.1); color: var(--gold); font-family: monospace; }
+        #msg { margin-top: 10px; font-size: 0.9rem; min-height: 1.2rem; }
     </style>
 </head>
 <body>
+
+    <div id="quick-nav">
+        <div class="nav-tab">GAMES MENU</div>
+        <p style="font-size: 0.7rem; color: var(--gold); margin-bottom: 10px; font-weight: bold; text-transform: uppercase;">Quick Switch</p>
+        <a href="#" class="quick-nav-link" onclick="loadGame('math')"><i class="fas fa-calculator"></i> Math Main</a>
+        <a href="#" class="quick-nav-link" onclick="loadGame('lower_primary')"><i class="fas fa-plus-circle"></i> Lower Primary</a>
+        <a href="#" class="quick-nav-link" onclick="loadGame('preschool')"><i class="fas fa-child"></i> Preschool Math</a>
+        <a href="#" class="quick-nav-link" onclick="loadGame('fractions')"><i class="fas fa-percentage"></i> Fractions %</a>
+        <hr style="border: 0.5px solid #2d3748; margin: 10px 0;">
+        <a href="#" class="quick-nav-link" onclick="showMenu()" style="color: var(--gold);"><i class="fas fa-th-large"></i> Hub Home</a>
+    </div>
 
     <nav>
         <a href="index.html" class="logo">PRIME SCHOLARS</a>
@@ -74,29 +155,63 @@
             <button class="btn-unlock" onclick="validateAccess()">Unlock Arena</button>
             <p id="msg"></p>
             <div id="admin-display"></div>
-            <a href="https://wa.me/233209851942?text=I%20have%20paid%20for%20the%20Math%20Game" target="_blank" class="whatsapp-link">
+            <a href="https://wa.me/233209851942?text=I%20have%20paid%20for%20the%20Math%20Game" target="_blank" style="display: block; margin-top: 20px; color: #25d366; text-decoration: none; font-size: 0.9rem;">
                 <i class="fab fa-whatsapp"></i> Chat for Access Code
             </a>
         </div>
     </div>
 
+    <div id="game-selection">
+        <h1 style="color: var(--gold); font-size: 2.2rem; margin-bottom: 10px;">Mathematics Practice Hub</h1>
+        <p style="color: #ccc;">Select a module to sharpen your skills</p>
+        <div class="grid">
+            <div class="game-card" onclick="loadGame('math')">
+                <i class="fas fa-calculator"></i>
+                <h3>Mathematics Practice</h3>
+                <p>General arithmetic and problem-solving arena.</p>
+            </div>
+            <div class="game-card" onclick="loadGame('lower_primary')">
+                <i class="fas fa-plus-circle"></i>
+                <h3>Lower Primary</h3>
+                <p>Foundational Addition and Subtraction exercises.</p>
+            </div>
+            <div class="game-card" onclick="loadGame('preschool')">
+                <i class="fas fa-shapes"></i>
+                <h3>Preschool Math</h3>
+                <p>Fun and simple math for our youngest scholars.</p>
+            </div>
+            <div class="game-card" onclick="loadGame('fractions')">
+                <i class="fas fa-percent"></i>
+                <h3>Fractions & %</h3>
+                <p>Master the world of parts, wholes, and percentages.</p>
+            </div>
+        </div>
+    </div>
+
     <div id="game-arena">
-        <h1 id="arena-title" style="color: var(--gold); margin-bottom: 5px;">Mathematics Practice Arena</h1>
+        <button class="back-btn" onclick="showMenu()"><i class="fas fa-arrow-left"></i> Back to Selection</button>
+        <h2 id="arena-title" style="color: var(--gold); margin-bottom: 10px; font-size: 1.2rem;">Arena</h2>
         <div class="iframe-container">
-            <iframe src="https://psla-math-game.onrender.com/" allowfullscreen></iframe>
+            <iframe id="game-frame" src="" allowfullscreen></iframe>
         </div>
     </div>
 
     <script>
-        // --- CONFIGURATION ---
         const MASTER_PASS = "BOSS2026"; 
         const SECRET_SALT = "PRIME_GOLD_99"; 
+
+        // Game Database
+        const GAMES = {
+            'math': { title: "Mathematics Practice Arena", url: "https://psla-math-game.onrender.com/" },
+            'lower_primary': { title: "Lower Primary Addition & Subtraction", url: "https://lower-primary-addition-and-subtraction.onrender.com" },
+            'preschool': { title: "Preschool Addition & Subtraction", url: "https://preschool-addition-and-subtraction-game.onrender.com" },
+            'fractions': { title: "Fractions and Percentages Mastery", url: "https://fractions-and-percentages-game.onrender.com" }
+        };
 
         const months = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
         const d = new Date();
         const curM = months[d.getMonth()];
         const curY = d.getFullYear();
-        
         document.getElementById('current-month-name').innerText = curM + " " + curY;
 
         function getCode(m, y, s) {
@@ -109,36 +224,44 @@
         const STORAGE_ID = "ps_session_" + curM + "_" + curY;
 
         window.onload = function() {
-            if (localStorage.getItem(STORAGE_ID) === "unlocked") showArena();
+            if (localStorage.getItem(STORAGE_ID) === "unlocked") showMenu();
         };
 
         function validateAccess() {
             const input = document.getElementById('userInput');
             const val = input.value.toUpperCase().trim();
-            const msg = document.getElementById('msg');
-            const admin = document.getElementById('admin-display');
-
             if (val === MASTER_PASS) {
-                admin.style.display = "block";
-                admin.innerHTML = "ADMIN MODE<br>This month's code: <strong>" + VALID_CODE + "</strong>";
-                input.value = "";
+                document.getElementById('admin-display').style.display = "block";
+                document.getElementById('admin-display').innerHTML = "ADMIN MODE<br>This month's code: <strong>" + VALID_CODE + "</strong>";
                 return;
             }
-
             if (val === VALID_CODE) {
                 localStorage.setItem(STORAGE_ID, "unlocked");
-                showArena();
+                showMenu();
             } else {
-                msg.style.color = "var(--error)";
-                msg.innerText = "Incorrect code. Please pay for " + curM + ".";
+                document.getElementById('msg').style.color = "var(--error)";
+                document.getElementById('msg').innerText = "Incorrect code. Please check or contact Support.";
                 input.style.borderColor = "var(--error)";
             }
         }
 
-        function showArena() {
+        function showMenu() {
             document.getElementById('payment-overlay').style.display = 'none';
-            document.getElementById('game-arena').style.display = 'block';
+            document.getElementById('game-selection').style.display = 'block';
+            document.getElementById('game-arena').style.display = 'none';
             document.getElementById('logout-btn').style.display = 'inline-block';
+            document.getElementById('quick-nav').style.display = 'block';
+            document.getElementById('game-frame').src = ""; // Clear iframe to save memory
+        }
+
+        function loadGame(gameKey) {
+            const game = GAMES[gameKey];
+            if (!game) return;
+            document.getElementById('game-selection').style.display = 'none';
+            document.getElementById('game-arena').style.display = 'block';
+            document.getElementById('arena-title').innerText = game.title;
+            document.getElementById('game-frame').src = game.url;
+            window.scrollTo(0, 0);
         }
 
         function logout() {
@@ -150,3 +273,4 @@
     </script>
 </body>
 </html>
+
