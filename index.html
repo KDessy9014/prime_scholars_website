@@ -11,6 +11,7 @@
             --gold: #D4AF37; 
             --white: #ffffff; 
             --card-bg: #1c243d;
+            --whatsapp-green: #25D366;
         }
 
         body { 
@@ -46,6 +47,9 @@
             transition: 0.3s;
         }
         .nav-links a:hover { color: var(--gold); }
+        
+        .nav-links .hw-nav { color: var(--whatsapp-green); font-weight: bold; }
+        
         .nav-links .cta-nav { 
             background: var(--gold); 
             color: var(--dark); 
@@ -57,7 +61,7 @@
         .hero { 
             height: 85vh; 
             background: linear-gradient(rgba(10, 15, 29, 0.7), rgba(10, 15, 29, 0.7)), 
-                        url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80');
+                        url('slide1.jpg'); 
             background-size: cover; 
             background-position: center;
             display: flex; 
@@ -101,7 +105,48 @@
         .btn-outline { border: 2px solid var(--gold); color: var(--gold); }
         .btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2); }
 
-        /* Stats/Features Section */
+        /* Homework Banner & Online Status */
+        .homework-banner {
+            background: linear-gradient(45deg, #1c243d, #0a0f1d);
+            padding: 60px 5%;
+            margin: 40px 5%;
+            border-radius: 20px;
+            border: 2px dashed var(--gold);
+            text-align: center;
+        }
+
+        .status-dot {
+            height: 12px;
+            width: 12px;
+            background-color: var(--whatsapp-green);
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+
+        .btn-whatsapp {
+            background-color: var(--whatsapp-green);
+            color: white;
+            padding: 18px 40px;
+            font-size: 1.3rem;
+            border-radius: 50px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            transition: 0.3s;
+            margin-top: 20px;
+        }
+        .btn-whatsapp:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4); }
+
+        /* Features Section */
         .features { 
             padding: 100px 5%; 
             display: grid; 
@@ -124,12 +169,6 @@
         .feature-card h3 { font-size: 1.4rem; margin-bottom: 15px; }
         .feature-card p { opacity: 0.7; line-height: 1.6; font-size: 0.95rem; }
 
-        /* Welcome Section */
-        .welcome { padding: 80px 10%; text-align: center; }
-        .welcome h2 { color: var(--gold); font-size: 2.2rem; margin-bottom: 20px; }
-        .welcome p { max-width: 800px; margin: 0 auto 40px; font-size: 1.1rem; line-height: 1.8; opacity: 0.8; }
-
-        /* Footer */
         footer { 
             background: #050810; 
             padding: 60px 5% 30px; 
@@ -137,9 +176,7 @@
             border-top: 1px solid rgba(212, 175, 55, 0.2);
         }
 
-        .social-links { margin-bottom: 30px; }
         .social-links a { color: var(--gold); font-size: 1.5rem; margin: 0 15px; transition: 0.3s; }
-        .social-links a:hover { color: white; }
         .footer-info { opacity: 0.6; font-size: 0.85rem; }
 
         @keyframes fadeInDown {
@@ -150,7 +187,7 @@
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.2rem; }
             .btn-group { flex-direction: column; width: 100%; }
-            .nav-links a:not(.cta-nav) { display: none; } /* Simplified mobile nav */
+            .nav-links a:not(.cta-nav):not(.hw-nav) { display: none; }
         }
     </style>
 </head>
@@ -160,49 +197,54 @@
         <a href="index.html" class="logo">PRIME SCHOLARS</a>
         <div class="nav-links">
             <a href="about.html">About</a>
-            <a href="pricing.html">Pricing</a>
             <a href="gallery.html">Gallery</a>
+            <a href="https://wa.me/233209851942?text=Hello%20Prime%20Scholars,%20I%20need%20help%20with%20my%20homework.%20I%20am%20sending%20the%20photo%20now." class="hw-nav"><i class="fab fa-whatsapp"></i> Homework Help</a>
             <a href="registration.html" class="cta-nav">Enroll Now</a>
         </div>
     </nav>
 
     <header class="hero">
         <h1>Shape Your Future</h1>
-        <p>Providing premium tuition and homework support for Preschool, Primary, JHS, and SHS students in Ghana. Your journey to academic mastery begins here.</p>
+        <p>Providing premium tuition and homework support for Preschool, Primary, JHS, and SHS students in Ghana.</p>
         <div class="btn-group">
             <a href="registration.html" class="btn btn-gold">Register Student</a>
-            <a href="practice.html" class="btn btn-outline">Math Practice Arena</a>
+            <a href="practice.html" class="btn btn-outline">Practice Arena</a>
         </div>
     </header>
 
-    <section class="welcome">
-        <h2>Welcome to the Arena</h2>
-        <p>At Prime Scholars, we don't just teach subjects; we build confidence. Our hybrid approach combines traditional classroom excellence with modern interactive tools to ensure every scholar reaches their full potential.</p>
+    <section class="homework-banner" id="homework">
+        <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 15px;">
+            <span class="status-dot"></span>
+            <span style="color: #25D366; font-weight: bold; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px;">Tutors Currently Online</span>
+        </div>
+        <h2 style="color: var(--gold); font-size: 2rem; margin-top: 0;">Stuck on Homework?</h2>
+        <p style="font-size: 1.2rem; margin-bottom: 20px;">Snap a photo of your assignment and send it to our tutors for instant guidance!</p>
+        <a href="https://wa.me/233209851942?text=Hello%20Prime%20Scholars,%20I%20need%20help%20with%20my%20homework.%20I%20am%20sending%20the%20photo%20now." class="btn-whatsapp">
+            <i class="fab fa-whatsapp"></i> Snap & Send Photo
+        </a>
     </section>
 
     <section class="features">
         <div class="feature-card">
             <i class="fas fa-graduation-cap"></i>
             <h3>Expert Tuition</h3>
-            <p>Specialized teaching in Mathematics, Science, and English/Phonics tailored to each student's grade level.</p>
+            <p>Specialized teaching in Mathematics, Science, and English/Phonics tailored to each student's level.</p>
         </div>
         <div class="feature-card">
             <i class="fas fa-laptop-code"></i>
             <h3>Interactive Arena</h3>
-            <p>Exclusive access to our gamified Practice Arena to master Math concepts through fun and repetition.</p>
+            <p>Exclusive access to our gamified Practice Arena to master Math concepts through fun repetition.</p>
         </div>
         <div class="feature-card">
-            <i class="fas fa-clock"></i>
-            <h3>Homework Support</h3>
-            <p>Dedicated afternoon sessions to help students navigate school assignments and clarify difficult topics.</p>
+            <i class="fas fa-camera"></i>
+            <h3>Snap Support</h3>
+            <p>Direct WhatsApp line for students to send photos of difficult problems for quick clarification.</p>
         </div>
     </section>
 
     <footer>
         <div class="social-links">
-            <a href="#"><i class="fab fa-facebook"></i></a>
             <a href="https://wa.me/233209851942"><i class="fab fa-whatsapp"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
         </div>
         <p style="color: var(--gold); font-weight: bold; margin-bottom: 10px;">PRIME SCHOLARS LEARNING ARENA</p>
         <div class="footer-info">
