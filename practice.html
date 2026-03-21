@@ -6,166 +6,151 @@
     <title>Practice Arena | Prime Scholars</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --dark: #0a0f1d; --gold: #D4AF37; --white: #ffffff; --card-bg: #1c243d; }
+        :root { --dark: #0a0f1d; --gold: #D4AF37; --white: #ffffff; --card-bg: #1c243d; --success: #25D366; }
         
         body, html { 
-            font-family: 'Segoe UI', sans-serif; 
-            margin: 0; padding: 0;
-            background-color: var(--dark); 
-            color: var(--white); 
-            overflow: hidden; 
-            height: 100%;
-            touch-action: none; /* Disables browser zoom gestures */
+            margin: 0; padding: 0; background: var(--dark); color: var(--white);
+            overflow: hidden; height: 100%; width: 100%; touch-action: none;
+            font-family: 'Segoe UI', sans-serif;
         }
 
-        /* Navigation */
+        /* Nav Bar */
         nav { 
-            background: var(--dark); 
-            padding: 10px 5%; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            border-bottom: 2px solid var(--gold);
-            height: 50px;
+            background: var(--dark); padding: 0 5%; display: flex; 
+            justify-content: space-between; align-items: center; 
+            border-bottom: 2px solid var(--gold); height: 50px;
         }
 
-        /* The Game Container */
-        #game-arena { 
-            display: none; 
-            width: 100vw; 
-            height: calc(100vh - 52px); 
-            background: #000;
-            position: relative;
+        /* Loading Screen - CRITICAL for Render Free Tier */
+        #loader {
+            position: fixed; top: 50px; left: 0; width: 100%; height: calc(100% - 50px);
+            background: var(--dark); z-index: 3000; display: none;
+            flex-direction: column; justify-content: center; align-items: center;
         }
-
-        .iframe-wrapper {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
+        .spinner {
+            width: 40px; height: 40px; border: 4px solid rgba(212, 175, 55, 0.2);
+            border-top: 4px solid var(--gold); border-radius: 50%;
+            animation: spin 1s linear infinite; margin-bottom: 15px;
         }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* FIXED: allow="autoplay" solves the sound issue */
-        iframe { 
-            width: 100%; 
-            height: 100%; 
-            border: none;
-        }
-
-        .exit-btn {
-            position: absolute;
-            bottom: 25px;
-            right: 25px;
-            background: var(--gold);
-            color: var(--dark);
-            border: none;
-            padding: 12px 25px;
-            border-radius: 50px;
-            font-weight: bold;
-            z-index: 1000;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-            text-transform: uppercase;
-            font-size: 0.8rem;
-        }
-
-        /* Menu and Leaderboard Styles */
+        /* Menu */
         #menu { padding: 20px; text-align: center; overflow-y: auto; height: calc(100vh - 70px); }
-        
-        .leaderboard-card {
-            background: rgba(212, 175, 55, 0.1);
-            border: 1px solid var(--gold);
-            padding: 15px;
-            margin: 15px auto;
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px auto; max-width: 500px; }
+        .card { background: var(--card-bg); border: 1px solid var(--gold); padding: 20px 10px; border-radius: 15px; cursor: pointer; }
+        .card i { font-size: 1.8rem; color: var(--gold); margin-bottom: 8px; }
+        .card p { font-size: 0.8rem; margin: 0; font-weight: bold; }
+
+        /* Tutor Section */
+        .tutor-section {
+            margin: 20px auto; max-width: 500px; padding: 15px;
+            background: rgba(37, 211, 102, 0.05); border: 1px dashed var(--success);
             border-radius: 12px;
-            text-align: left;
-            max-width: 400px;
         }
-        .score-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            font-size: 0.9rem;
+        .tutor-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--success); color: white; padding: 10px 20px;
+            border-radius: 25px; text-decoration: none; font-weight: bold; font-size: 0.8rem;
         }
 
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; max-width: 500px; margin-left: auto; margin-right: auto;}
-        .card { background: var(--card-bg); border: 1px solid var(--gold); padding: 20px 10px; border-radius: 15px; cursor: pointer; transition: 0.2s; }
-        .card:active { transform: scale(0.95); background: var(--gold); color: var(--dark); }
-        .card i { font-size: 2rem; color: var(--gold); margin-bottom: 10px; }
-        .card p { font-size: 0.85rem; margin: 0; font-weight: bold; }
-        .card:active i { color: var(--dark); }
+        /* Game Arena - FIXED SCALING */
+        #game-arena { display: none; width: 100vw; height: calc(100vh - 50px); background: #000; position: relative; overflow: hidden; }
+        .iframe-wrapper { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
+        
+        iframe { 
+            border: none; width: 1024px; height: 768px; 
+            transform-origin: center center; background: #000;
+        }
+
+        /* Controls */
+        .controls-overlay { position: absolute; bottom: 15px; width: 100%; display: flex; justify-content: center; gap: 15px; z-index: 2000; }
+        .action-btn {
+            background: var(--gold); color: var(--dark); border: none;
+            padding: 10px 22px; border-radius: 30px; font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-size: 0.75rem;
+        }
     </style>
 </head>
 <body>
 
     <nav>
-        <span style="color:var(--gold); font-weight:bold; letter-spacing:1px;">PRIME SCHOLARS</span>
-        <a href="index.html" style="color:white; text-decoration:none; font-size:0.8rem; border: 1px solid #444; padding: 4px 10px; border-radius: 4px;">Main Site</a>
+        <span style="color:var(--gold); font-weight:bold;">PRIME SCHOLARS</span>
+        <span style="font-size: 0.6rem; color: var(--gold); opacity: 0.6;">V.FINAL_STABLE</span>
     </nav>
 
-    <div id="menu">
-        <h2 style="color:var(--gold); font-size: 1.3rem; margin-bottom: 5px;"><i class="fas fa-trophy"></i> High Scores</h2>
-        <div class="leaderboard-card">
-            <div class="score-row"><span>Math Main:</span> <span id="score-math" style="color:var(--gold); font-weight:bold;">0</span></div>
-            <div class="score-row"><span>Lower Primary:</span> <span id="score-lower" style="color:var(--gold); font-weight:bold;">0</span></div>
-            <div class="score-row"><span>Preschool:</span> <span id="score-pre" style="color:var(--gold); font-weight:bold;">0</span></div>
-            <div class="score-row"><span>Fractions:</span> <span id="score-frac" style="color:var(--gold); font-weight:bold;">0</span></div>
-        </div>
+    <div id="loader">
+        <div class="spinner"></div>
+        <h3 style="color:var(--gold); font-size: 1rem;">Loading Arena...</h3>
+        <p style="font-size: 0.7rem; color: #888; text-align: center; padding: 0 20px;">
+            Render is waking up the servers.<br>This takes about 45 seconds the first time.
+        </p>
+    </div>
 
-        <h2 style="color:var(--gold); font-size: 1.2rem; margin-top: 25px;">Choose Your Arena</h2>
+    <div id="menu">
+        <h2 style="color:var(--gold); font-size: 1.2rem;"><i class="fas fa-rocket"></i> Scholar Hub</h2>
         <div class="grid">
             <div class="card" onclick="start('math')"><i class="fas fa-calculator"></i><p>Math Main</p></div>
             <div class="card" onclick="start('lower')"><i class="fas fa-plus-circle"></i><p>Lower Primary</p></div>
             <div class="card" onclick="start('pre')"><i class="fas fa-child"></i><p>Preschool</p></div>
             <div class="card" onclick="start('frac')"><i class="fas fa-percent"></i><p>Fractions</p></div>
         </div>
+
+        <div class="tutor-section">
+            <a href="https://wa.me/233209851942?text=I%20need%20help%20with%20math!" target="_blank" class="tutor-btn">
+                <i class="fab fa-whatsapp"></i> CONTACT TUTOR
+            </a>
+        </div>
     </div>
 
     <div id="game-arena">
-        <button class="exit-btn" onclick="stop()">End Session</button>
+        <div class="controls-overlay">
+            <button class="action-btn" onclick="stop()"><i class="fas fa-home"></i> EXIT</button>
+            <button class="action-btn" onclick="unlockAudio()"><i class="fas fa-volume-up"></i> FIX SOUND</button>
+        </div>
         <div class="iframe-wrapper">
-            <iframe id="frame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+            <iframe id="frame" src="" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>
         </div>
     </div>
 
     <script>
-        // --- GAME DATABASE ---
         const LINKS = {
             'math': 'https://psla-math-game.onrender.com/',
-            'lower': 'https://lower-primary-addition-and-subtraction.onrender.com',
-            'pre': 'https://preschool-addition-and-subtraction-game.onrender.com',
-            'frac': 'https://fractions-and-percentages-game.onrender.com'
+            'lower': 'https://lower-primary-addition-and-subtraction.onrender.com/',
+            'pre': 'https://preschool-addition-and-subtraction-game.onrender.com/',
+            'frac': 'https://fractions-and-percentages-game.onrender.com/'
         };
-
-        // --- SCORE SYSTEM ---
-        function updateDisplay() {
-            document.getElementById('score-math').innerText = localStorage.getItem('top_math') || 0;
-            document.getElementById('score-lower').innerText = localStorage.getItem('top_lower') || 0;
-            document.getElementById('score-pre').innerText = localStorage.getItem('top_pre') || 0;
-            document.getElementById('score-frac').innerText = localStorage.getItem('top_frac') || 0;
-        }
 
         function start(id) {
             document.getElementById('menu').style.display = 'none';
-            document.getElementById('game-arena').style.display = 'block';
+            document.getElementById('loader').style.display = 'flex';
             const f = document.getElementById('frame');
             f.src = LINKS[id];
-            
-            // Interaction records to help browser allow sound
-            f.onload = () => { f.focus(); };
+
+            f.onload = () => {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('game-arena').style.display = 'block';
+                
+                // This makes the game large and centered on all mobile screens
+                const scale = Math.min(window.innerWidth / 1024, (window.innerHeight - 50) / 768) * 1.15;
+                f.style.transform = `scale(${scale})`;
+                
+                // Interaction focus for keyboard/sound
+                f.focus();
+            };
+        }
+
+        function unlockAudio() {
+            const f = document.getElementById('frame');
+            f.focus();
+            alert("Audio Enabled! Tap the game screen to hear the sound.");
         }
 
         function stop() {
             document.getElementById('menu').style.display = 'block';
             document.getElementById('game-arena').style.display = 'none';
+            document.getElementById('loader').style.display = 'none';
             document.getElementById('frame').src = "";
-            updateDisplay();
         }
-
-        // Initialize display on load
-        window.onload = updateDisplay;
     </script>
 </body>
 </html>
