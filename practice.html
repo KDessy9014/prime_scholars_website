@@ -6,186 +6,166 @@
     <title>Practice Arena | Prime Scholars</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --dark: #0a0f1d; --gold: #D4AF37; --white: #ffffff; --error: #ff4d4d; --card-bg: #1c243d; --success: #25D366; }
+        :root { --dark: #0a0f1d; --gold: #D4AF37; --white: #ffffff; --card-bg: #1c243d; }
         
-        /* FIX 2: Prevent the whole page from bouncing/scrolling when tapping fast */
-        html, body { 
+        body, html { 
             font-family: 'Segoe UI', sans-serif; 
-            margin: 0; 
+            margin: 0; padding: 0;
             background-color: var(--dark); 
             color: var(--white); 
-            overflow-x: hidden; 
-            touch-action: manipulation; 
+            overflow: hidden; 
+            height: 100%;
+            touch-action: none; /* Disables browser zoom gestures */
         }
-        
-        /* Nav Bar */
+
+        /* Navigation */
         nav { 
-            background-color: var(--dark); 
+            background: var(--dark); 
             padding: 10px 5%; 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            border-bottom: 3px solid var(--gold); 
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            border-bottom: 2px solid var(--gold);
+            height: 50px;
         }
-        .logo { color: var(--gold); font-size: 1rem; font-weight: bold; text-decoration: none; }
-        .nav-links { display: flex; align-items: center; }
-        .nav-links button { color: white; margin-left: 10px; font-size: 0.8rem; background: none; border: none; cursor: pointer; }
 
-        /* FIX 3: Responsive Game Container */
-        #game-arena { display: none; padding: 5px; text-align: center; height: calc(100vh - 70px); }
-        .iframe-container { 
-            position: relative; 
-            width: 100%; 
-            height: 90%; 
-            margin: 0 auto; 
-            border: 2px solid var(--gold); 
-            border-radius: 8px; 
-            background: #000; 
-            overflow: hidden; 
-            /* Ensures content stays within the box */
-            -webkit-overflow-scrolling: touch; 
+        /* The Game Container */
+        #game-arena { 
+            display: none; 
+            width: 100vw; 
+            height: calc(100vh - 52px); 
+            background: #000;
+            position: relative;
         }
-        
+
+        .iframe-wrapper {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* FIXED: allow="autoplay" solves the sound issue */
         iframe { 
             width: 100%; 
             height: 100%; 
-            border: none; 
-            /* Fixes some scaling issues on iOS */
-            display: block; 
+            border: none;
         }
 
-        .back-btn { background: none; border: 1px solid var(--gold); color: var(--gold); padding: 5px 12px; cursor: pointer; border-radius: 5px; margin-bottom: 5px; font-size: 0.8rem; }
-        
-        /* Payment/Menu Styles (Same as before) */
-        #payment-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 15, 29, 0.98); display: flex; justify-content: center; align-items: center; z-index: 2000; }
-        .payment-card { background: var(--card-bg); padding: 30px; border-radius: 15px; border: 2px solid var(--gold); text-align: center; width: 90%; max-width: 400px; }
-        input[type="text"] { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid var(--gold); background: #050810; color: white; border-radius: 5px; box-sizing: border-box; }
-        .btn-unlock { background: var(--gold); color: var(--dark); width: 100%; padding: 12px; border: none; font-weight: bold; border-radius: 5px; }
+        .exit-btn {
+            position: absolute;
+            bottom: 25px;
+            right: 25px;
+            background: var(--gold);
+            color: var(--dark);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
 
-        #game-selection { display: none; padding: 20px 5%; text-align: center; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-top: 20px; }
-        .game-card { background: var(--card-bg); border: 1px solid #2d3748; padding: 20px 10px; border-radius: 10px; cursor: pointer; }
-        .game-card i { font-size: 2rem; color: var(--gold); }
-        .game-card h3 { font-size: 0.9rem; margin: 10px 0 5px; }
-        .game-card p { font-size: 0.7rem; color: #aaa; }
+        /* Menu and Leaderboard Styles */
+        #menu { padding: 20px; text-align: center; overflow-y: auto; height: calc(100vh - 70px); }
+        
+        .leaderboard-card {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--gold);
+            padding: 15px;
+            margin: 15px auto;
+            border-radius: 12px;
+            text-align: left;
+            max-width: 400px;
+        }
+        .score-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+        }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; max-width: 500px; margin-left: auto; margin-right: auto;}
+        .card { background: var(--card-bg); border: 1px solid var(--gold); padding: 20px 10px; border-radius: 15px; cursor: pointer; transition: 0.2s; }
+        .card:active { transform: scale(0.95); background: var(--gold); color: var(--dark); }
+        .card i { font-size: 2rem; color: var(--gold); margin-bottom: 10px; }
+        .card p { font-size: 0.85rem; margin: 0; font-weight: bold; }
+        .card:active i { color: var(--dark); }
     </style>
 </head>
 <body>
 
     <nav>
-        <a href="index.html" class="logo">PRIME SCHOLARS</a>
-        <div class="nav-links">
-            <button id="volume-btn" onclick="toggleVolume()">
-                <i id="vol-icon" class="fas fa-volume-up"></i>
-            </button>
-            <button id="logout-btn" onclick="logout()" style="display:none; color:var(--error);">Logout</button>
-        </div>
+        <span style="color:var(--gold); font-weight:bold; letter-spacing:1px;">PRIME SCHOLARS</span>
+        <a href="index.html" style="color:white; text-decoration:none; font-size:0.8rem; border: 1px solid #444; padding: 4px 10px; border-radius: 4px;">Main Site</a>
     </nav>
 
-    <div id="payment-overlay">
-        <div class="payment-card">
-            <h2>Access Arena</h2>
-            <p>Enter the code for <strong id="current-month-name"></strong>.</p>
-            <input type="text" id="userInput" placeholder="Code Here" autocomplete="off">
-            <button class="btn-unlock" onclick="validateAccess()">Unlock</button>
-            <p id="msg" style="margin-top:10px; font-size: 0.8rem;"></p>
+    <div id="menu">
+        <h2 style="color:var(--gold); font-size: 1.3rem; margin-bottom: 5px;"><i class="fas fa-trophy"></i> High Scores</h2>
+        <div class="leaderboard-card">
+            <div class="score-row"><span>Math Main:</span> <span id="score-math" style="color:var(--gold); font-weight:bold;">0</span></div>
+            <div class="score-row"><span>Lower Primary:</span> <span id="score-lower" style="color:var(--gold); font-weight:bold;">0</span></div>
+            <div class="score-row"><span>Preschool:</span> <span id="score-pre" style="color:var(--gold); font-weight:bold;">0</span></div>
+            <div class="score-row"><span>Fractions:</span> <span id="score-frac" style="color:var(--gold); font-weight:bold;">0</span></div>
         </div>
-    </div>
 
-    <div id="game-selection">
-        <h1 style="color: var(--gold); font-size: 1.5rem;">Math Hub</h1>
+        <h2 style="color:var(--gold); font-size: 1.2rem; margin-top: 25px;">Choose Your Arena</h2>
         <div class="grid">
-            <div class="game-card" onclick="loadGame('math')">
-                <i class="fas fa-calculator"></i>
-                <h3>Main Arena</h3>
-            </div>
-            <div class="game-card" onclick="loadGame('lower_primary')">
-                <i class="fas fa-plus-circle"></i>
-                <h3>Lower Primary</h3>
-            </div>
-            <div class="game-card" onclick="loadGame('preschool')">
-                <i class="fas fa-shapes"></i>
-                <h3>Preschool</h3>
-            </div>
+            <div class="card" onclick="start('math')"><i class="fas fa-calculator"></i><p>Math Main</p></div>
+            <div class="card" onclick="start('lower')"><i class="fas fa-plus-circle"></i><p>Lower Primary</p></div>
+            <div class="card" onclick="start('pre')"><i class="fas fa-child"></i><p>Preschool</p></div>
+            <div class="card" onclick="start('frac')"><i class="fas fa-percent"></i><p>Fractions</p></div>
         </div>
     </div>
 
     <div id="game-arena">
-        <button class="back-btn" onclick="showMenu()"><i class="fas fa-arrow-left"></i> Menu</button>
-        <div class="iframe-container">
-            <iframe id="game-frame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        <button class="exit-btn" onclick="stop()">End Session</button>
+        <div class="iframe-wrapper">
+            <iframe id="frame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
         </div>
     </div>
 
     <script>
-        const SECRET_SALT = "PRIME_GOLD_99"; 
-        const GAMES = {
-            'math': { url: "https://psla-math-game.onrender.com/" },
-            'lower_primary': { url: "https://lower-primary-addition-and-subtraction.onrender.com" },
-            'preschool': { url: "https://preschool-addition-and-subtraction-game.onrender.com" }
+        // --- GAME DATABASE ---
+        const LINKS = {
+            'math': 'https://psla-math-game.onrender.com/',
+            'lower': 'https://lower-primary-addition-and-subtraction.onrender.com',
+            'pre': 'https://preschool-addition-and-subtraction-game.onrender.com',
+            'frac': 'https://fractions-and-percentages-game.onrender.com'
         };
 
-        const months = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
-        const d = new Date();
-        const curM = months[d.getMonth()];
-        const curY = d.getFullYear();
-        document.getElementById('current-month-name').innerText = curM + " " + curY;
-
-        function getCode(m, y, s) {
-            let h = 0, str = m + y + s;
-            for (let i = 0; i < str.length; i++) h = ((h << 5) - h) + str.charCodeAt(i), h |= 0;
-            return "PS-" + Math.abs(h).toString(36).toUpperCase().substring(0, 6);
+        // --- SCORE SYSTEM ---
+        function updateDisplay() {
+            document.getElementById('score-math').innerText = localStorage.getItem('top_math') || 0;
+            document.getElementById('score-lower').innerText = localStorage.getItem('top_lower') || 0;
+            document.getElementById('score-pre').innerText = localStorage.getItem('top_pre') || 0;
+            document.getElementById('score-frac').innerText = localStorage.getItem('top_frac') || 0;
         }
 
-        const VALID_CODE = getCode(curM, curY, SECRET_SALT);
-        const STORAGE_ID = "ps_session_" + curM + "_" + curY;
-
-        window.onload = function() {
-            if (localStorage.getItem(STORAGE_ID) === "unlocked") showMenu();
-        };
-
-        function validateAccess() {
-            const input = document.getElementById('userInput');
-            if (input.value.toUpperCase().trim() === VALID_CODE) {
-                localStorage.setItem(STORAGE_ID, "unlocked");
-                showMenu();
-            } else {
-                document.getElementById('msg').style.color = "var(--error)";
-                document.getElementById('msg').innerText = "Incorrect code.";
-            }
-        }
-
-        function showMenu() {
-            document.getElementById('payment-overlay').style.display = 'none';
-            document.getElementById('game-selection').style.display = 'block';
-            document.getElementById('game-arena').style.display = 'none';
-            document.getElementById('logout-btn').style.display = 'inline-block';
-            document.getElementById('game-frame').src = ""; 
-        }
-
-        function loadGame(gameKey) {
-            const game = GAMES[gameKey];
-            if (!game) return;
-            document.getElementById('game-selection').style.display = 'none';
+        function start(id) {
+            document.getElementById('menu').style.display = 'none';
             document.getElementById('game-arena').style.display = 'block';
-            document.getElementById('game-frame').src = game.url;
-            window.scrollTo(0, 0);
+            const f = document.getElementById('frame');
+            f.src = LINKS[id];
+            
+            // Interaction records to help browser allow sound
+            f.onload = () => { f.focus(); };
         }
 
-        function logout() {
-            localStorage.removeItem(STORAGE_ID);
-            location.reload();
+        function stop() {
+            document.getElementById('menu').style.display = 'block';
+            document.getElementById('game-arena').style.display = 'none';
+            document.getElementById('frame').src = "";
+            updateDisplay();
         }
 
-        function toggleVolume() {
-            const icon = document.getElementById('vol-icon');
-            icon.classList.toggle('fa-volume-up');
-            icon.classList.toggle('fa-volume-mute');
-        }
+        // Initialize display on load
+        window.onload = updateDisplay;
     </script>
 </body>
 </html>
-
