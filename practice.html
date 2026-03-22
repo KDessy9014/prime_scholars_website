@@ -144,3 +144,132 @@
         </div>
     </nav>
 
+    <div id="payment-overlay">
+        <div class="payment-card">
+            <div class="momo-badge"><i class="fas fa-mobile-alt"></i> MTN MoMo / Telecel Cash</div>
+            <h2>Monthly Access</h2>
+            <p style="color: #aaa; font-size: 0.9rem;">Enter the subscription code for <strong id="current-month-name"></strong>.</p>
+            <div class="price-tag">₵ 20.00 <span style="font-size: 1rem; color: #fff;">/ month</span></div>
+            <p><strong>Pay to: 0540550512</strong></p>
+            <input type="text" id="userInput" placeholder="Enter Access Code" autocomplete="off">
+            <button class="btn-unlock" onclick="validateAccess()">Unlock Arena</button>
+            <p id="msg"></p>
+            <div id="admin-display"></div>
+            <a href="https://wa.me/233209851942?text=I%20have%20paid%20for%20the%20Math%20Game" target="_blank" style="display: block; margin-top: 20px; color: #25d366; text-decoration: none; font-size: 0.9rem;">
+                <i class="fab fa-whatsapp"></i> Chat for Access Code
+            </a>
+        </div>
+    </div>
+
+    <div id="game-selection">
+        <h1 style="color: var(--gold); font-size: 2.2rem; margin-bottom: 10px;">Mathematics Practice Hub</h1>
+        <p style="color: #ccc;">Select a module to sharpen your skills</p>
+        <div class="grid">
+            <div class="game-card" onclick="loadGame('math')">
+                <i class="fas fa-calculator"></i>
+                <h3>Mathematics Practice</h3>
+                <p>General arithmetic and problem-solving arena.</p>
+            </div>
+            <div class="game-card" onclick="loadGame('lower_primary')">
+                <i class="fas fa-plus-circle"></i>
+                <h3>Lower Primary</h3>
+                <p>Foundational Addition and Subtraction exercises.</p>
+            </div>
+            <div class="game-card" onclick="loadGame('preschool')">
+                <i class="fas fa-shapes"></i>
+                <h3>Preschool Math</h3>
+                <p>Fun and simple math for our youngest scholars.</p>
+            </div>
+            <div class="game-card" onclick="loadGame('fractions')">
+                <i class="fas fa-percent"></i>
+                <h3>Fractions & %</h3>
+                <p>Master the world of parts, wholes, and percentages.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-arena">
+        <button class="back-btn" onclick="showMenu()"><i class="fas fa-arrow-left"></i> Back to Selection</button>
+        <h2 id="arena-title" style="color: var(--gold); margin-bottom: 10px; font-size: 1.2rem;">Arena</h2>
+        <div class="iframe-container">
+            <iframe id="game-frame" src="" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+        const MASTER_PASS = "BOSS2026"; 
+        const SECRET_SALT = "PRIME_GOLD_99"; 
+
+        // Game Database
+        const GAMES = {
+            'math': { title: "Mathematics Practice Arena", url: "https://psla-math-game.onrender.com/" },
+            'lower_primary': { title: "Lower Primary Addition & Subtraction", url: "https://lower-primary-addition-and-subtraction.onrender.com" },
+            'preschool': { title: "Preschool Addition & Subtraction", url: "https://preschool-addition-and-subtraction-game.onrender.com" },
+            'fractions': { title: "Fractions and Percentages Mastery", url: "https://fractions-and-percentages-game.onrender.com" }
+        };
+
+        const months = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
+        const d = new Date();
+        const curM = months[d.getMonth()];
+        const curY = d.getFullYear();
+        document.getElementById('current-month-name').innerText = curM + " " + curY;
+
+        function getCode(m, y, s) {
+            let h = 0, str = m + y + s;
+            for (let i = 0; i < str.length; i++) h = ((h << 5) - h) + str.charCodeAt(i), h |= 0;
+            return "PS-" + Math.abs(h).toString(36).toUpperCase().substring(0, 6);
+        }
+
+        const VALID_CODE = getCode(curM, curY, SECRET_SALT);
+        const STORAGE_ID = "ps_session_" + curM + "_" + curY;
+
+        window.onload = function() {
+            if (localStorage.getItem(STORAGE_ID) === "unlocked") showMenu();
+        };
+
+        function validateAccess() {
+            const input = document.getElementById('userInput');
+            const val = input.value.toUpperCase().trim();
+            if (val === MASTER_PASS) {
+                document.getElementById('admin-display').style.display = "block";
+                document.getElementById('admin-display').innerHTML = "ADMIN MODE<br>This month's code: <strong>" + VALID_CODE + "</strong>";
+                return;
+            }
+            if (val === VALID_CODE) {
+                localStorage.setItem(STORAGE_ID, "unlocked");
+                showMenu();
+            } else {
+                document.getElementById('msg').style.color = "var(--error)";
+                document.getElementById('msg').innerText = "Incorrect code. Please check or contact Support.";
+                input.style.borderColor = "var(--error)";
+            }
+        }
+
+        function showMenu() {
+            document.getElementById('payment-overlay').style.display = 'none';
+            document.getElementById('game-selection').style.display = 'block';
+            document.getElementById('game-arena').style.display = 'none';
+            document.getElementById('logout-btn').style.display = 'inline-block';
+            document.getElementById('quick-nav').style.display = 'block';
+            document.getElementById('game-frame').src = ""; // Clear iframe to save memory
+        }
+
+        function loadGame(gameKey) {
+            const game = GAMES[gameKey];
+            if (!game) return;
+            document.getElementById('game-selection').style.display = 'none';
+            document.getElementById('game-arena').style.display = 'block';
+            document.getElementById('arena-title').innerText = game.title;
+            document.getElementById('game-frame').src = game.url;
+            window.scrollTo(0, 0);
+        }
+
+        function logout() {
+            localStorage.removeItem(STORAGE_ID);
+            location.reload();
+        }
+
+        document.getElementById('userInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') validateAccess(); });
+    </script>
+</body>
+</html>
